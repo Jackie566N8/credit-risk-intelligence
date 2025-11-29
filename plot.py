@@ -17,11 +17,13 @@ import pandas as pd
 import seaborn as sns
 
 DATA_PATH = Path("data/accepted/accepted_2007_to_2018Q4.csv")
+REJECTED_DATA_PATH = Path("data/rejected/rejected_2007_to_2018Q4.csv")
 FIGURES_DIR = Path("figures")
 TARGET_COLUMN = "default_flag"
 OUTCOME_COLUMN = "target_label"
 STATUS_COLUMN = "loan_status"
 PLOT_SAMPLE_SIZE = 100_000
+REJECTED_SAMPLE_SIZE = 100_000
 
 DEFAULT_STATUSES = {
     "Charged Off",
@@ -114,6 +116,25 @@ READ_DTYPE = {
     "purpose": "category",
 }
 
+REJECTED_READ_COLUMNS = [
+    "Amount Requested",
+    "Application Date",
+    "Loan Title",
+    "Risk_Score",
+    "Debt-To-Income Ratio",
+    "State",
+    "Employment Length",
+]
+
+REJECTED_READ_DTYPE = {
+    "Amount Requested": "float32",
+    "Loan Title": "category",
+    "Risk_Score": "float32",
+    "Debt-To-Income Ratio": "string",
+    "State": "category",
+    "Employment Length": "category",
+}
+
 
 def print_step(name: str) -> None:
     print(f"\n=== {name} ===")
@@ -167,10 +188,38 @@ def load_data(path: Path = DATA_PATH) -> pd.DataFrame:
     return model_df
 
 
+def load_rejected_data(path: Path = REJECTED_DATA_PATH) -> pd.DataFrame:
+    if not path.exists():
+        raise FileNotFoundError(f"Missing rejected data file: {path}")
+
+    df = pd.read_csv(path, usecols=REJECTED_READ_COLUMNS, dtype=REJECTED_READ_DTYPE)
+    df = df.rename(
+        columns={
+            "Amount Requested": "amount_requested",
+            "Application Date": "application_date",
+            "Loan Title": "loan_title",
+            "Risk_Score": "risk_score",
+            "Debt-To-Income Ratio": "rejected_dti",
+            "State": "state",
+            "Employment Length": "employment_length",
+        }
+    )
+    df["application_date"] = pd.to_datetime(df["application_date"], errors="coerce")
+    df["application_year"] = df["application_date"].dt.year.astype("float32")
+    df["rejected_dti"] = clean_percent_column(df["rejected_dti"])
+    return df
+
+
 def sample_for_plot(df: pd.DataFrame) -> pd.DataFrame:
     if len(df) <= PLOT_SAMPLE_SIZE:
         return df
     return df.sample(PLOT_SAMPLE_SIZE, random_state=42)
+
+
+def sample_rejected_for_plot(df: pd.DataFrame) -> pd.DataFrame:
+    if len(df) <= REJECTED_SAMPLE_SIZE:
+        return df
+    return df.sample(REJECTED_SAMPLE_SIZE, random_state=42)
 
 
 def show_basic_eda(df: pd.DataFrame) -> None:
@@ -195,6 +244,16 @@ def show_basic_eda(df: pd.DataFrame) -> None:
     missing = df[FEATURE_COLUMNS].isna().sum()
     missing = missing[missing > 0].sort_values(ascending=False)
     print(missing if not missing.empty else "No missing values found.")
+
+
+def show_rejected_eda(df: pd.DataFrame) -> None:
+    print("Rejected shape:", df.shape)
+    print("\nRejected preview:")
+    print(df.head())
+    print("\nRejected numeric summary:")
+    print(df[["amount_requested", "risk_score", "rejected_dti"]].describe().T)
+    print("\nTop rejected states:")
+    print(df["state"].value_counts().head(10))
 
 
 def save_target_count_plot(df: pd.DataFrame) -> Path:
@@ -288,6 +347,237 @@ def save_purpose_default_rate_plot(df: pd.DataFrame) -> Path:
     return out
 
 
+def save_grade_default_rate_plot(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "grade_default_rate.png"
+
+    grade_default = (
+        df.groupby("grade", observed=True, as_index=False)[TARGET_COLUMN]
+        .mean()
+        .sort_values("grade")
+    )
+
+    plt.figure(figsize=(8, 4))
+    sns.barplot(data=grade_default, x="grade", y=TARGET_COLUMN, color="#4C78A8")
+    plt.title("Default Rate by Credit Grade")
+    plt.xlabel("Credit Grade")
+    plt.ylabel("Default Rate")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
+def save_grade_interest_boxplot(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "interest_rate_by_grade.png"
+    plot_df = sample_for_plot(df)
+
+    plt.figure(figsize=(9, 4))
+    sns.boxplot(data=plot_df, x="grade", y="int_rate", color="#72B7B2", showfliers=False)
+    plt.title("Interest Rate Distribution by Credit Grade")
+    plt.xlabel("Credit Grade")
+    plt.ylabel("Interest Rate (%)")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
+def save_fico_dti_by_target_plot(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "fico_dti_by_target.png"
+    plot_df = sample_for_plot(df)
+
+    plt.figure(figsize=(8, 5))
+    sns.scatterplot(
+        data=plot_df,
+        x="fico_score",
+        y="dti",
+        hue=OUTCOME_COLUMN,
+        hue_order=["Non-Default", "Default"],
+        alpha=0.25,
+        s=14,
+        linewidth=0,
+    )
+    plt.title("FICO Score and DTI by Loan Outcome")
+    plt.xlabel("FICO Score")
+    plt.ylabel("Debt-to-Income Ratio")
+    plt.legend(title="Loan Outcome")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
+def save_fico_default_rate_plot(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "fico_band_default_rate.png"
+    plot_df = df[["fico_score", TARGET_COLUMN]].dropna().copy()
+    plot_df["fico_band"] = pd.cut(
+        plot_df["fico_score"],
+        bins=[300, 580, 620, 660, 700, 740, 780, 850],
+        labels=["300-579", "580-619", "620-659", "660-699", "700-739", "740-779", "780-850"],
+        include_lowest=True,
+    )
+    fico_default = (
+        plot_df.groupby("fico_band", observed=True, as_index=False)[TARGET_COLUMN]
+        .mean()
+        .dropna()
+    )
+
+    plt.figure(figsize=(9, 4))
+    sns.lineplot(data=fico_default, x="fico_band", y=TARGET_COLUMN, marker="o")
+    plt.title("Default Rate by FICO Band")
+    plt.xlabel("FICO Band")
+    plt.ylabel("Default Rate")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
+def save_revol_util_violin_plot(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "revol_util_by_target.png"
+    plot_df = sample_for_plot(df)
+
+    plt.figure(figsize=(7, 4))
+    sns.violinplot(
+        data=plot_df,
+        x=OUTCOME_COLUMN,
+        y="revol_util",
+        order=["Non-Default", "Default"],
+        inner="quartile",
+        cut=0,
+    )
+    plt.title("Revolving Utilization by Loan Outcome")
+    plt.xlabel("Loan Outcome")
+    plt.ylabel("Revolving Utilization (%)")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
+def save_income_loan_heatmap(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "income_loan_amount_default_heatmap.png"
+    plot_df = df[["annual_inc", "loan_amnt", TARGET_COLUMN]].dropna().copy()
+    plot_df["annual_inc"] = plot_df["annual_inc"].clip(upper=250_000)
+    plot_df["income_band"] = pd.qcut(plot_df["annual_inc"], q=5, duplicates="drop")
+    plot_df["loan_amount_band"] = pd.qcut(plot_df["loan_amnt"], q=5, duplicates="drop")
+    heatmap_data = plot_df.pivot_table(
+        index="income_band",
+        columns="loan_amount_band",
+        values=TARGET_COLUMN,
+        aggfunc="mean",
+        observed=True,
+    )
+
+    plt.figure(figsize=(10, 5))
+    sns.heatmap(heatmap_data, annot=True, fmt=".1%", cmap="YlOrRd")
+    plt.title("Default Rate by Income and Loan Amount Bands")
+    plt.xlabel("Loan Amount Band")
+    plt.ylabel("Annual Income Band")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
+def save_term_grade_default_rate_plot(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "term_grade_default_rate.png"
+    rate_table = df.pivot_table(
+        index="grade",
+        columns="term_months",
+        values=TARGET_COLUMN,
+        aggfunc="mean",
+        observed=True,
+    ).sort_index()
+
+    plt.figure(figsize=(7, 4))
+    sns.heatmap(rate_table, annot=True, fmt=".1%", cmap="YlOrRd")
+    plt.title("Default Rate by Grade and Term")
+    plt.xlabel("Term (Months)")
+    plt.ylabel("Credit Grade")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
+def save_rejected_risk_score_histogram(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "rejected_risk_score_distribution.png"
+    plot_df = sample_rejected_for_plot(df).dropna(subset=["risk_score"])
+
+    plt.figure(figsize=(8, 4))
+    sns.histplot(data=plot_df, x="risk_score", bins=40, kde=True, color="#F58518")
+    plt.title("Rejected Applications Risk Score Distribution")
+    plt.xlabel("Risk Score")
+    plt.ylabel("Count")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
+def save_rejected_amount_dti_plot(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "rejected_amount_vs_dti.png"
+    plot_df = sample_rejected_for_plot(df).dropna(
+        subset=["amount_requested", "rejected_dti", "risk_score"]
+    )
+    plot_df = plot_df[plot_df["rejected_dti"].between(0, 100)]
+
+    plt.figure(figsize=(8, 5))
+    sns.scatterplot(
+        data=plot_df,
+        x="amount_requested",
+        y="rejected_dti",
+        hue="risk_score",
+        palette="viridis",
+        alpha=0.3,
+        s=12,
+        linewidth=0,
+    )
+    plt.title("Rejected Amount Requested vs DTI")
+    plt.xlabel("Amount Requested")
+    plt.ylabel("Debt-to-Income Ratio (%)")
+    plt.legend(title="Risk Score")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
+def save_rejected_state_count_plot(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "top_rejected_states.png"
+    state_counts = df["state"].value_counts().head(15).rename_axis("state").reset_index(name="count")
+
+    plt.figure(figsize=(9, 4))
+    sns.barplot(data=state_counts, x="state", y="count", color="#54A24B")
+    plt.title("Top Rejected Application States")
+    plt.xlabel("State")
+    plt.ylabel("Rejected Applications")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
+def save_rejected_yearly_trend_plot(df: pd.DataFrame) -> Path:
+    out = FIGURES_DIR / "rejected_applications_by_year.png"
+    yearly_counts = (
+        df.dropna(subset=["application_year"])
+        .groupby("application_year", as_index=False)
+        .size()
+    )
+
+    plt.figure(figsize=(9, 4))
+    sns.lineplot(data=yearly_counts, x="application_year", y="size", marker="o")
+    plt.title("Rejected Applications by Year")
+    plt.xlabel("Application Year")
+    plt.ylabel("Rejected Applications")
+    plt.tight_layout()
+    plt.savefig(out, dpi=150)
+    plt.close()
+    return out
+
+
 def main() -> None:
     sns.set_theme(style="whitegrid")
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
@@ -295,9 +585,13 @@ def main() -> None:
     print_step("Load Data")
     df = load_data()
     print(f"Loaded from: {DATA_PATH}")
+    rejected_df = load_rejected_data()
+    print(f"Loaded from: {REJECTED_DATA_PATH}")
 
     print_step("Basic EDA")
     show_basic_eda(df)
+    print_step("Rejected EDA")
+    show_rejected_eda(rejected_df)
 
     print_step("Save Plots")
     outputs = [
@@ -306,6 +600,17 @@ def main() -> None:
         save_loan_amount_boxplot(df),
         save_correlation_heatmap(df),
         save_purpose_default_rate_plot(df),
+        save_grade_default_rate_plot(df),
+        save_grade_interest_boxplot(df),
+        save_fico_dti_by_target_plot(df),
+        save_fico_default_rate_plot(df),
+        save_revol_util_violin_plot(df),
+        save_income_loan_heatmap(df),
+        save_term_grade_default_rate_plot(df),
+        save_rejected_risk_score_histogram(rejected_df),
+        save_rejected_amount_dti_plot(rejected_df),
+        save_rejected_state_count_plot(rejected_df),
+        save_rejected_yearly_trend_plot(rejected_df),
     ]
 
     for output in outputs:
