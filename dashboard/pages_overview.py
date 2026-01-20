@@ -5,12 +5,15 @@ from dashboard.charts import (
     make_metric_bar_chart,
     make_precision_recall_chart,
 )
-from dashboard.components import metric_cards, numeric_table
+from dashboard.components import metric_cards, numeric_table, page_header
 from dashboard.config import METRIC_LABELS
 
 
 def render_overview_page(comparison_df) -> None:
-    st.subheader("Model Comparison")
+    page_header(
+        "Portfolio Overview",
+        "Model performance comparison and optimized-threshold classification metrics.",
+    )
     metric_cards(comparison_df)
 
     if comparison_df.empty:

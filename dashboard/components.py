@@ -4,6 +4,19 @@ import pandas as pd
 import streamlit as st
 
 
+DECISION_CLASS = {
+    "Approve": "risk-approve",
+    "Manual Review": "risk-review",
+    "Decline": "risk-decline",
+}
+
+
+def page_header(title: str, caption: str | None = None) -> None:
+    st.subheader(title)
+    if caption:
+        st.caption(caption)
+
+
 def show_result_status(comparison_df: pd.DataFrame, result_files: list[Path]) -> None:
     available_count = sum(path.exists() for path in result_files)
     st.caption(f"Loaded {available_count} model result files.")
@@ -44,6 +57,34 @@ def numeric_table(df: pd.DataFrame) -> None:
     )
 
 
+def decision_badge(decision: str) -> None:
+    css_class = DECISION_CLASS.get(decision, "risk-review")
+    st.markdown(
+        f'<span class="risk-pill {css_class}">{decision}</span>',
+        unsafe_allow_html=True,
+    )
+
+
+def assessment_metrics(assessment) -> None:
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Default Probability", f"{assessment.probability_default:.2%}")
+    col2.metric("Credit Score", f"{assessment.credit_score}")
+    col3.metric("Risk Grade", assessment.risk_grade)
+    col4.metric("Expected Loss", format_currency(assessment.expected_loss))
+
+
+def driver_list(drivers: list[str]) -> None:
+    if not drivers:
+        st.info("No major risk drivers detected.")
+        return
+    for driver in drivers:
+        st.write(f"- {driver}")
+
+
 def show_raw_text(path: Path, text: str) -> None:
     with st.expander(f"Raw result file: {path.name}", expanded=False):
         st.code(text, language="text")
+
+
+def format_currency(value: float) -> str:
+    return f"${value:,.0f}"

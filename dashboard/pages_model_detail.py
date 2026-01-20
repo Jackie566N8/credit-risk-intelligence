@@ -1,11 +1,14 @@
 import streamlit as st
 
 from dashboard.charts import make_cv_metric_chart, make_feature_importance_chart
-from dashboard.components import numeric_table, show_raw_text
+from dashboard.components import numeric_table, page_header, show_raw_text
 
 
 def render_model_detail_page(reports: dict, default_model: str | None = None) -> None:
-    st.subheader("Single Model Detail")
+    page_header(
+        "Model Detail",
+        "Cross-validation metrics, holdout test results, and model-level risk drivers.",
+    )
     if not reports:
         st.warning("No model result files found. Run `python train_credit_models.py` first.")
         return

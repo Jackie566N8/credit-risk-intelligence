@@ -2,11 +2,15 @@ from pathlib import Path
 
 import streamlit as st
 
+from dashboard.components import page_header
 from dashboard.config import FIGURE_GROUPS, FIGURES_DIR
 
 
 def render_figures_page() -> None:
-    st.subheader("EDA and Risk Visualization Figures")
+    page_header(
+        "EDA Figures",
+        "Seaborn and Matplotlib charts generated from accepted and rejected LendingClub records.",
+    )
     if not FIGURES_DIR.exists():
         st.warning("No figures directory found. Run `python plot.py` first.")
         return
