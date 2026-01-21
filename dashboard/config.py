@@ -2,8 +2,9 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-RESULTS_DIR = PROJECT_ROOT / "results"
-FIGURES_DIR = PROJECT_ROOT / "figures"
+MODELING_DIR = PROJECT_ROOT / "modeling"
+RESULTS_DIR = MODELING_DIR / "results"
+FIGURES_DIR = MODELING_DIR / "figures"
 
 COMPARISON_RESULTS_FILE = RESULTS_DIR / "all_models_comparison_results.txt"
 

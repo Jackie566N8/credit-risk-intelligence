@@ -12,7 +12,7 @@ def render_figures_page() -> None:
         "Seaborn and Matplotlib charts generated from accepted and rejected LendingClub records.",
     )
     if not FIGURES_DIR.exists():
-        st.warning("No figures directory found. Run `python plot.py` first.")
+        st.warning("No figures directory found. Run `python modeling/plot.py` first.")
         return
 
     for group_name, file_names in FIGURE_GROUPS.items():

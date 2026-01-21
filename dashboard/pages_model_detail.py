@@ -10,7 +10,7 @@ def render_model_detail_page(reports: dict, default_model: str | None = None) ->
         "Cross-validation metrics, holdout test results, and model-level risk drivers.",
     )
     if not reports:
-        st.warning("No model result files found. Run `python train_credit_models.py` first.")
+        st.warning("No model result files found. Run `python modeling/train_credit_models.py` first.")
         return
 
     model_names = list(reports.keys())
