@@ -1,14 +1,15 @@
 import streamlit as st
 
-from dashboard.components import show_result_status
-from dashboard.config import MODEL_RESULT_FILES, PAGE_LABELS
-from dashboard.data_loader import load_all_model_reports, load_comparison_results
-from dashboard.pages_batch import render_batch_page
-from dashboard.pages_decision import render_decision_page
-from dashboard.pages_figures import render_figures_page
-from dashboard.pages_model_detail import render_model_detail_page
-from dashboard.pages_overview import render_overview_page
-from dashboard.styles import apply_app_style
+from app_navigation_config import PAGE_LABELS
+from app_paths import MODEL_RESULT_FILES
+from model_results_loader import load_all_model_reports, load_comparison_results
+from page_batch_risk_assessment import render_batch_page
+from page_eda_figures import render_figures_page
+from page_model_detail import render_model_detail_page
+from page_portfolio_overview import render_overview_page
+from page_single_customer_decision import render_decision_page
+from streamlit_page_style import apply_app_style
+from ui_result_status import show_result_status
 
 
 st.set_page_config(
