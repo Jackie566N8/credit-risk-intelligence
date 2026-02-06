@@ -3,10 +3,10 @@ from pathlib import Path
 
 import pandas as pd
 
-from app_paths import COMPARISON_RESULTS_FILE, MODEL_RESULT_FILES
-from model_display_config import MODEL_LABELS
-from model_report_types import ModelReport
-from model_result_parser import (
+from config.app_paths import COMPARISON_RESULTS_FILE, MODEL_RESULT_FILES
+from config.model_display_config import MODEL_LABELS
+from model_results.model_report_types import ModelReport
+from model_results.model_result_parser import (
     parse_bullet_section,
     parse_feature_importance,
     parse_table_after_heading,

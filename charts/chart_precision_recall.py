@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-from model_display_config import METRIC_LABELS
+from config.model_display_config import METRIC_LABELS
 
 
 def make_precision_recall_chart(df: pd.DataFrame):

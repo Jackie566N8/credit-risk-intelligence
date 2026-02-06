@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-from model_display_config import METRIC_LABELS
+from config.model_display_config import METRIC_LABELS
 
 
 def make_auc_comparison_chart(df: pd.DataFrame):
