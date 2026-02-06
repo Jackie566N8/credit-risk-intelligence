@@ -2,9 +2,9 @@ from pathlib import Path
 
 import streamlit as st
 
-from app_paths import FIGURES_DIR
-from figure_gallery_config import FIGURE_GROUPS
-from ui_page_header import page_header
+from config.app_paths import FIGURES_DIR
+from config.figure_gallery_config import FIGURE_GROUPS
+from ui.ui_page_header import page_header
 
 
 def render_figures_page() -> None:

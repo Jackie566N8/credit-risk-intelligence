@@ -3,14 +3,14 @@ from io import StringIO
 import pandas as pd
 import streamlit as st
 
-from chart_batch_decision_count import make_batch_decision_chart
-from chart_batch_pd_score import make_batch_pd_score_chart
-from credit_decision_config import BASE_LOSS_GIVEN_DEFAULT
-from risk_applicant_profile import REQUIRED_BATCH_COLUMNS
-from risk_batch_assessment import assess_batch
-from risk_batch_template import sample_batch_template
-from ui_data_table import numeric_table
-from ui_page_header import page_header
+from charts.chart_batch_decision_count import make_batch_decision_chart
+from charts.chart_batch_pd_score import make_batch_pd_score_chart
+from config.credit_decision_config import BASE_LOSS_GIVEN_DEFAULT
+from risk.risk_applicant_profile import REQUIRED_BATCH_COLUMNS
+from risk.risk_batch_assessment import assess_batch
+from risk.risk_batch_template import sample_batch_template
+from ui.ui_data_table import numeric_table
+from ui.ui_page_header import page_header
 
 
 def render_batch_page() -> None:

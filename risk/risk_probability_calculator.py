@@ -1,7 +1,7 @@
 from math import exp
 
-from risk_applicant_profile import ApplicantProfile
-from risk_probability_adjustments import (
+from risk.risk_applicant_profile import ApplicantProfile
+from risk.risk_probability_adjustments import (
     home_ownership_adjustment,
     loan_income_adjustment,
     purpose_adjustment,

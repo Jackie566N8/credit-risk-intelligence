@@ -1,4 +1,4 @@
-from risk_applicant_profile import ApplicantProfile
+from risk.risk_applicant_profile import ApplicantProfile
 
 
 def risk_drivers(profile: ApplicantProfile, probability_default: float) -> list[str]:

@@ -1,9 +1,9 @@
-from credit_decision_config import BASE_LOSS_GIVEN_DEFAULT
-from risk_applicant_profile import ApplicantProfile, RiskAssessment
-from risk_credit_score import probability_to_credit_score, probability_to_risk_grade
-from risk_decision_rules import approval_decision
-from risk_driver_rules import risk_drivers
-from risk_probability_calculator import estimate_default_probability
+from config.credit_decision_config import BASE_LOSS_GIVEN_DEFAULT
+from risk.risk_applicant_profile import ApplicantProfile, RiskAssessment
+from risk.risk_credit_score import probability_to_credit_score, probability_to_risk_grade
+from risk.risk_decision_rules import approval_decision
+from risk.risk_driver_rules import risk_drivers
+from risk.risk_probability_calculator import estimate_default_probability
 
 
 def assess_applicant(

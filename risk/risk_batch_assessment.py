@@ -2,9 +2,9 @@ from dataclasses import asdict
 
 import pandas as pd
 
-from credit_decision_config import BASE_LOSS_GIVEN_DEFAULT
-from risk_applicant_profile import ApplicantProfile, REQUIRED_BATCH_COLUMNS
-from risk_single_assessment import assess_applicant
+from config.credit_decision_config import BASE_LOSS_GIVEN_DEFAULT
+from risk.risk_applicant_profile import ApplicantProfile, REQUIRED_BATCH_COLUMNS
+from risk.risk_single_assessment import assess_applicant
 
 
 def assess_batch(df: pd.DataFrame, lgd: float = BASE_LOSS_GIVEN_DEFAULT) -> pd.DataFrame:

@@ -1,10 +1,10 @@
 import streamlit as st
 
-from chart_cv_metrics import make_cv_metric_chart
-from chart_feature_importance import make_feature_importance_chart
-from ui_data_table import numeric_table
-from ui_page_header import page_header
-from ui_raw_text import show_raw_text
+from charts.chart_cv_metrics import make_cv_metric_chart
+from charts.chart_feature_importance import make_feature_importance_chart
+from ui.ui_data_table import numeric_table
+from ui.ui_page_header import page_header
+from ui.ui_raw_text import show_raw_text
 
 
 def render_model_detail_page(reports: dict, default_model: str | None = None) -> None:

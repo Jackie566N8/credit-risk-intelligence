@@ -1,6 +1,6 @@
 import streamlit as st
 
-from ui_formatters import format_currency
+from ui.ui_formatters import format_currency
 
 
 def assessment_metrics(assessment) -> None:

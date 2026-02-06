@@ -1,4 +1,4 @@
-from credit_decision_config import (
+from config.credit_decision_config import (
     APPROVAL_PD_THRESHOLD,
     APPROVAL_SCORE_THRESHOLD,
     REVIEW_PD_THRESHOLD,

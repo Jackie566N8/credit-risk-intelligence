@@ -1,0 +1,60 @@
+Credit Risk Modeling Results - Logistic Regression
+Model name: logistic_regression
+Generated at: 2026-07-15T02:16:03
+
+Data
+- Source: data/accepted/accepted_2007_to_2018Q4.csv
+- Raw accepted rows: 2260701
+- Excluded non-final/current-status rows: 891135
+- Modeling rows used: 120000
+- Default count: 25482
+- Non-default count: 94518
+- Default rate: 21.2350%
+- Numeric features: loan_amnt, funded_amnt, term_months, int_rate, installment, annual_inc, dti, fico_score, open_acc, pub_rec, revol_bal, revol_util, total_acc, mort_acc, pub_rec_bankruptcies
+- Categorical features: grade, sub_grade, emp_length, home_ownership, verification_status, purpose, application_type
+
+Training Setup
+- Model: Logistic Regression
+- Class imbalance handling: SMOTE inside imbalanced-learn Pipeline
+- Cross validation: Stratified 5-fold on training split
+- Test size: 0.20
+- Threshold validation size inside training split: 0.20
+- Threshold objective: maximize F2 score on validation split
+
+Cross-Validation on Training Split
+metric	mean	std
+roc_auc	0.7029	0.0024
+recall	0.6653	0.0036
+precision	0.3237	0.0022
+f1	0.4355	0.0026
+accuracy	0.6338	0.0026
+
+Holdout Test Result with Optimized Threshold
+roc_auc	average_precision	threshold	precision	recall	f1	f2	accuracy	confusion_matrix
+0.7013	0.3778	0.3500	0.2674	0.8760	0.4098	0.6020	0.4642	TN=6676, FP=12228, FN=632, TP=4464
+
+Default 0.50 Threshold Reference
+precision	recall	f1	f2	accuracy
+0.3264	0.6688	0.4387	0.5528	0.6366
+
+Logistic Regression absolute coefficients
+01. grade_A: 0.924361
+02. sub_grade_A1: 0.641367
+03. purpose_wedding: 0.608993
+04. purpose_small_business: 0.491609
+05. purpose_car: 0.345754
+06. grade_G: 0.328959
+07. grade_B: 0.319988
+08. grade_F: 0.301991
+09. term_months: 0.299278
+10. grade_E: 0.291250
+11. installment: 0.287516
+12. sub_grade_E5: 0.249139
+13. emp_length_10+ years: 0.239338
+14. purpose_house: 0.235567
+15. sub_grade_A2: 0.233988
+16. sub_grade_B2: 0.224790
+17. fico_score: 0.192557
+18. dti: 0.190330
+19. grade_D: 0.186788
+20. purpose_educational: 0.185595

@@ -1,12 +1,12 @@
 import streamlit as st
 
-from chart_auc_comparison import make_auc_comparison_chart
-from chart_metric_bar import make_metric_bar_chart
-from chart_precision_recall import make_precision_recall_chart
-from model_display_config import METRIC_LABELS
-from ui_data_table import numeric_table
-from ui_metric_cards import metric_cards
-from ui_page_header import page_header
+from charts.chart_auc_comparison import make_auc_comparison_chart
+from charts.chart_metric_bar import make_metric_bar_chart
+from charts.chart_precision_recall import make_precision_recall_chart
+from config.model_display_config import METRIC_LABELS
+from ui.ui_data_table import numeric_table
+from ui.ui_metric_cards import metric_cards
+from ui.ui_page_header import page_header
 
 
 def render_overview_page(comparison_df) -> None:
