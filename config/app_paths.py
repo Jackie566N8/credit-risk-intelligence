@@ -5,6 +5,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MODELING_DIR = PROJECT_ROOT / "modeling"
 RESULTS_DIR = MODELING_DIR / "results"
 FIGURES_DIR = MODELING_DIR / "figures"
+ARTIFACTS_DIR = MODELING_DIR / "artifacts"
 
 COMPARISON_RESULTS_FILE = RESULTS_DIR / "all_models_comparison_results.txt"
 
@@ -13,4 +14,8 @@ MODEL_RESULT_FILES = {
     "decision_tree": RESULTS_DIR / "decision_tree_results.txt",
     "random_forest": RESULTS_DIR / "random_forest_results.txt",
     "gradient_boosting": RESULTS_DIR / "gradient_boosting_results.txt",
+}
+
+MODEL_ARTIFACT_FILES = {
+    "random_forest": ARTIFACTS_DIR / "random_forest_pipeline.joblib",
 }

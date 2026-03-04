@@ -13,6 +13,7 @@ if not os.environ.get("LOKY_MAX_CPU_COUNT"):
 
 import numpy as np
 import pandas as pd
+import joblib
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline
 from sklearn.base import clone
@@ -36,6 +37,7 @@ MODELING_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = MODELING_DIR.parent
 DATA_PATH = PROJECT_ROOT / "data/accepted/accepted_2007_to_2018Q4.csv"
 RESULTS_DIR = MODELING_DIR / "results"
+ARTIFACTS_DIR = MODELING_DIR / "artifacts"
 TARGET_COLUMN = "default_flag"
 STATUS_COLUMN = "loan_status"
 
@@ -186,6 +188,7 @@ class ModelTrainingResult:
     optimized_threshold: ThresholdResult
     confusion_matrix: str
     report_text: str
+    artifact_path: Path | None = None
 
 
 def clean_percent_column(series: pd.Series) -> pd.Series:
@@ -525,6 +528,12 @@ def train_model(
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(report_text, encoding="utf-8")
+    artifact_path = save_model_artifact(
+        model_spec=model_spec,
+        pipeline=final_pipeline,
+        threshold=selected_threshold,
+        args=args,
+    )
     return ModelTrainingResult(
         model_name=model_spec.name,
         display_name=model_spec.display_name,
@@ -536,7 +545,31 @@ def train_model(
         optimized_threshold=optimized_result,
         confusion_matrix=confusion_text,
         report_text=report_text,
+        artifact_path=artifact_path,
     )
+
+
+def save_model_artifact(
+    model_spec: ModelSpec,
+    pipeline: Pipeline,
+    threshold: float,
+    args: argparse.Namespace,
+) -> Path:
+    artifact_path = args.artifacts_dir / f"{model_spec.name}_pipeline.joblib"
+    artifact_path.parent.mkdir(parents=True, exist_ok=True)
+    joblib.dump(
+        {
+            "model_name": model_spec.name,
+            "display_name": model_spec.display_name,
+            "pipeline": pipeline,
+            "threshold": threshold,
+            "feature_columns": FEATURE_COLUMNS,
+            "trained_at": datetime.now().isoformat(timespec="seconds"),
+            "sample_rows": args.sample_rows,
+        },
+        artifact_path,
+    )
+    return artifact_path
 
 
 def run_single_model(model_spec: ModelSpec, args: argparse.Namespace) -> ModelTrainingResult:
@@ -606,6 +639,7 @@ def add_common_arguments(parser: argparse.ArgumentParser) -> argparse.ArgumentPa
     parser.add_argument("--threshold-size", type=float, default=0.2)
     parser.add_argument("--random-state", type=int, default=42)
     parser.add_argument("--n-jobs", type=int, default=-1)
+    parser.add_argument("--artifacts-dir", type=Path, default=ARTIFACTS_DIR)
     return parser
 
 
