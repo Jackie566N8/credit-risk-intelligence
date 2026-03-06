@@ -24,6 +24,9 @@ class RiskAssessment:
     expected_loss: float
     loss_given_default: float
     drivers: list[str]
+    scorecard_probability_default: float
+    model_probability_default: float | None
+    probability_source: str
 
 
 REQUIRED_BATCH_COLUMNS = list(ApplicantProfile.__dataclass_fields__.keys())
