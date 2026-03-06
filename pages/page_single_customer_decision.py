@@ -9,7 +9,7 @@ from config.credit_decision_config import (
 )
 from risk.risk_applicant_profile import ApplicantProfile
 from risk.risk_single_assessment import assess_applicant
-from ui.ui_assessment_summary import assessment_metrics
+from ui.ui_assessment_summary import assessment_metrics, probability_source_panel
 from ui.ui_decision_badge import decision_badge
 from ui.ui_page_header import page_header
 from ui.ui_risk_drivers import driver_list
@@ -60,6 +60,7 @@ def render_decision_page() -> None:
 
     decision_badge(assessment.decision)
     assessment_metrics(assessment)
+    probability_source_panel(assessment)
 
     col1, col2 = st.columns([1, 1])
     with col1:

@@ -35,6 +35,7 @@ def render_batch_page() -> None:
         st.stop()
 
     batch_summary(result_df)
+    st.caption(_probability_source_caption(result_df))
 
     col1, col2 = st.columns(2)
     with col1:
@@ -65,3 +66,8 @@ def batch_summary(result_df: pd.DataFrame) -> None:
     col2.metric("Avg Default Probability", f"{result_df['probability_default'].mean():.2%}")
     col3.metric("Avg Credit Score", f"{result_df['credit_score'].mean():.0f}")
     col4.metric("Total Expected Loss", f"${result_df['expected_loss'].sum():,.0f}")
+
+
+def _probability_source_caption(result_df: pd.DataFrame) -> str:
+    sources = result_df["probability_source"].value_counts().to_dict()
+    return "Probability source: " + ", ".join(f"{name}={count}" for name, count in sources.items())

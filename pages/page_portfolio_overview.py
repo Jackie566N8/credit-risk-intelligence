@@ -7,6 +7,7 @@ from config.model_display_config import METRIC_LABELS
 from ui.ui_data_table import numeric_table
 from ui.ui_metric_cards import metric_cards
 from ui.ui_page_header import page_header
+from ui.ui_report_highlights import report_highlight_cards
 
 
 def render_overview_page(comparison_df) -> None:
@@ -14,6 +15,8 @@ def render_overview_page(comparison_df) -> None:
         "Portfolio Overview",
         "Model performance comparison and optimized-threshold classification metrics.",
     )
+    report_highlight_cards()
+    st.markdown("### Reproducible Training Results")
     metric_cards(comparison_df)
 
     if comparison_df.empty:
