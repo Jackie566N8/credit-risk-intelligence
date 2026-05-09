@@ -1,9 +1,9 @@
 Credit Risk Modeling Results - Random Forest
 Model name: random_forest
-Generated at: 2026-07-15T02:16:32
+Generated at: 2026-07-15T03:35:01
 
 Data
-- Source: data/accepted/accepted_2007_to_2018Q4.csv
+- Source: /Users/brown/Documents/2026/2026.06_PBL-吴黄玮-GitHub/credit-risk-intelligence/data/accepted/accepted_2007_to_2018Q4.csv
 - Raw accepted rows: 2260701
 - Excluded non-final/current-status rows: 891135
 - Modeling rows used: 120000
