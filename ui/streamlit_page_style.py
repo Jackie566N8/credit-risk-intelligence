@@ -5,15 +5,23 @@ def apply_app_style() -> None:
     st.markdown(
         """
         <style>
+        .stApp {
+            background: #f8fafc;
+        }
         .block-container {
             padding-top: 1.6rem;
             padding-bottom: 2rem;
+            max-width: 1320px;
+        }
+        h1, h2, h3 {
+            color: #111827;
         }
         [data-testid="stMetric"] {
             background: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             padding: 0.8rem 0.9rem;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
         }
         [data-testid="stMetricLabel"] {
             color: #4b5563;
@@ -21,6 +29,24 @@ def apply_app_style() -> None:
         div[data-testid="stDataFrame"] {
             border: 1px solid #e5e7eb;
             border-radius: 8px;
+        }
+        section[data-testid="stSidebar"] {
+            border-right: 1px solid #e5e7eb;
+        }
+        .stButton > button,
+        .stDownloadButton > button,
+        button[kind="formSubmit"] {
+            border-radius: 8px;
+            border: 1px solid #1f2937;
+            font-weight: 600;
+        }
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 0.25rem;
+        }
+        .stTabs [data-baseweb="tab"] {
+            border-radius: 8px 8px 0 0;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
         .risk-pill {
             display: inline-block;

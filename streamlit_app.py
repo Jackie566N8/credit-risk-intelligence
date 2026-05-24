@@ -19,12 +19,12 @@ st.set_page_config(
 )
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(show_spinner="Loading model comparison results...")
 def cached_comparison_results():
     return load_comparison_results()
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(show_spinner="Loading model detail reports...")
 def cached_model_reports():
     return load_all_model_reports()
 
@@ -34,8 +34,9 @@ def main() -> None:
     st.title("Credit Risk Intelligence Dashboard")
     st.caption("LendingClub 2007-2018 risk modeling, credit scoring, approval decisioning, and portfolio visualization.")
 
-    comparison_df = cached_comparison_results()
-    reports = cached_model_reports()
+    with st.spinner("Preparing dashboard data and model status..."):
+        comparison_df = cached_comparison_results()
+        reports = cached_model_reports()
     show_result_status(
         comparison_df,
         list(MODEL_RESULT_FILES.values()),
