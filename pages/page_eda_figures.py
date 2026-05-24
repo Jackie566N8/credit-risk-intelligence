@@ -4,6 +4,8 @@ import streamlit as st
 
 from config.app_paths import FIGURES_DIR
 from config.figure_gallery_config import FIGURE_GROUPS
+from config.page_step_config import PAGE_STEPS
+from ui.ui_operation_steps import operation_steps
 from ui.ui_page_header import page_header
 
 
@@ -12,6 +14,7 @@ def render_figures_page() -> None:
         "EDA Figures",
         "Seaborn and Matplotlib charts generated from accepted and rejected LendingClub records.",
     )
+    operation_steps("EDA Figures", PAGE_STEPS["EDA Figures"])
     if not FIGURES_DIR.exists():
         st.warning("No figures directory found. Run `python modeling/plot.py` first.")
         return
@@ -22,7 +25,8 @@ def render_figures_page() -> None:
         if not paths:
             st.info(f"No figures available for {group_name}.")
             continue
-        image_grid(paths)
+        with st.spinner(f"Loading {group_name} figures..."):
+            image_grid(paths)
 
 
 def image_grid(paths: list[Path]) -> None:

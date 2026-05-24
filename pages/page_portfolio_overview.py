@@ -4,8 +4,10 @@ from charts.chart_auc_comparison import make_auc_comparison_chart
 from charts.chart_metric_bar import make_metric_bar_chart
 from charts.chart_precision_recall import make_precision_recall_chart
 from config.model_display_config import METRIC_LABELS
+from config.page_step_config import PAGE_STEPS
 from ui.ui_data_table import numeric_table
 from ui.ui_metric_cards import metric_cards
+from ui.ui_operation_steps import operation_steps
 from ui.ui_page_header import page_header
 from ui.ui_report_highlights import report_highlight_cards
 
@@ -15,6 +17,7 @@ def render_overview_page(comparison_df) -> None:
         "Portfolio Overview",
         "Model performance comparison and optimized-threshold classification metrics.",
     )
+    operation_steps("Portfolio Overview", PAGE_STEPS["Portfolio Overview"])
     report_highlight_cards()
     st.markdown("### Reproducible Training Results")
     metric_cards(comparison_df)
@@ -41,6 +44,7 @@ def render_overview_page(comparison_df) -> None:
             "Metric",
             options=["test_roc_auc", "recall", "precision", "f1", "f2", "accuracy"],
             format_func=lambda value: METRIC_LABELS.get(value, value),
+            help="选择一个指标，右侧柱状图会按该指标对模型排序。",
         )
         st.pyplot(make_metric_bar_chart(comparison_df, selected_metric))
     with col2:

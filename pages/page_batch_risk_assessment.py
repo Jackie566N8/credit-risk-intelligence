@@ -6,10 +6,12 @@ import streamlit as st
 from charts.chart_batch_decision_count import make_batch_decision_chart
 from charts.chart_batch_pd_score import make_batch_pd_score_chart
 from config.credit_decision_config import BASE_LOSS_GIVEN_DEFAULT
+from config.page_step_config import PAGE_STEPS
 from risk.risk_applicant_profile import REQUIRED_BATCH_COLUMNS
 from risk.risk_batch_assessment import assess_batch
 from risk.risk_batch_template import sample_batch_template
 from ui.ui_data_table import numeric_table
+from ui.ui_operation_steps import operation_steps
 from ui.ui_page_header import page_header
 
 
@@ -18,21 +20,40 @@ def render_batch_page() -> None:
         "Batch Risk Assessment",
         "CSV batch scoring with approval decision, credit score, and expected loss output.",
     )
+    operation_steps("Batch Risk Assessment", PAGE_STEPS["Batch Risk Assessment"])
 
-    lgd = st.slider("Batch Loss Given Default", min_value=0.20, max_value=0.90, value=BASE_LOSS_GIVEN_DEFAULT, step=0.05)
-    uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
-    input_df = pd.read_csv(uploaded_file) if uploaded_file else sample_batch_template()
+    lgd = st.slider(
+        "Batch Loss Given Default",
+        min_value=0.20,
+        max_value=0.90,
+        value=BASE_LOSS_GIVEN_DEFAULT,
+        step=0.05,
+        help="用于批量计算预期损失。预期损失 = 贷款金额 x 违约概率 x LGD。",
+    )
+    uploaded_file = st.file_uploader(
+        "Upload CSV",
+        type=["csv"],
+        help="上传批量申请客户数据。字段名称必须与 Required columns 一致。",
+    )
+    if uploaded_file:
+        with st.spinner("Reading uploaded CSV file..."):
+            input_df = pd.read_csv(uploaded_file)
+    else:
+        input_df = sample_batch_template()
     if uploaded_file is None:
         st.caption("Using sample applications.")
+    elif len(input_df) > 5000:
+        st.info(f"Large batch detected: {len(input_df):,} applications. Scoring may take a short time.")
 
     with st.expander("Required columns", expanded=False):
         st.code(", ".join(REQUIRED_BATCH_COLUMNS), language="text")
 
-    try:
-        result_df = assess_batch(input_df, lgd=lgd)
-    except ValueError as exc:
-        st.error(str(exc))
-        st.stop()
+    with st.spinner(f"Scoring {len(input_df):,} applications and calculating expected loss..."):
+        try:
+            result_df = assess_batch(input_df, lgd=lgd)
+        except ValueError as exc:
+            st.error(str(exc))
+            st.stop()
 
     batch_summary(result_df)
     st.caption(_probability_source_caption(result_df))
@@ -49,6 +70,7 @@ def render_batch_page() -> None:
         data=result_df.to_csv(index=False).encode("utf-8"),
         file_name="batch_risk_assessment_results.csv",
         mime="text/csv",
+        help="下载包含违约概率、信用评分、审批建议和预期损失的评估结果。",
     )
 
     template_csv = sample_batch_template().to_csv(index=False)
@@ -57,6 +79,7 @@ def render_batch_page() -> None:
         data=StringIO(template_csv).getvalue().encode("utf-8"),
         file_name="batch_risk_assessment_template.csv",
         mime="text/csv",
+        help="下载批量评估模板，按模板填写后可直接上传。",
     )
 
 
