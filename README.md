@@ -13,6 +13,26 @@ This project is an end-to-end credit risk analysis and decision platform built w
 - Batch CSV risk assessment with approval recommendation and expected loss.
 - Streamlit dashboard for model results, EDA figures, single-customer decisions, and batch scoring.
 
+## Data Source
+
+The project uses public LendingClub loan records from 2007 to 2018. The dataset contains approximately 2.26 million accepted loan records and a large rejected application file. It is commonly distributed as the LendingClub accepted/rejected loan dataset with the following files:
+
+```text
+accepted_2007_to_2018Q4.csv
+rejected_2007_to_2018Q4.csv
+```
+
+In this project, place the files under:
+
+```text
+data/accepted/accepted_2007_to_2018Q4.csv
+data/rejected/rejected_2007_to_2018Q4.csv
+```
+
+The raw accepted dataset contains more than 150 fields. This project selects core credit-risk features, including loan amount, annual income, FICO score, debt-to-income ratio, revolving utilization, interest rate, loan term, grade, purpose, and verification status. The default label is derived from `loan_status`, where charged-off, default, and late loans are treated as default cases, and fully paid loans are treated as non-default cases.
+
+The `data/` directory is intentionally excluded from git because the raw CSV files are large.
+
 ## Directory Structure
 
 ```text
@@ -159,12 +179,12 @@ modeling/artifacts/
 
 The current default training setup uses conservative pre-loan features and avoids post-loan repayment fields that would cause target leakage.
 
-| Model | CV ROC-AUC | Test ROC-AUC | Threshold | Precision | Recall | F1 | F2 | Accuracy |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Logistic Regression | 0.7029 | 0.7013 | 0.3500 | 0.2674 | 0.8760 | 0.4098 | 0.6020 | 0.4642 |
-| Decision Tree | 0.6580 | 0.6587 | 0.1200 | 0.2370 | 0.9419 | 0.3787 | 0.5906 | 0.3438 |
-| Random Forest | 0.6985 | 0.6987 | 0.2800 | 0.2653 | 0.8815 | 0.4078 | 0.6019 | 0.4565 |
-| Gradient Boosting | 0.7064 | 0.7060 | 0.1600 | 0.2714 | 0.8721 | 0.4140 | 0.6045 | 0.4757 |
+| Model               | CV ROC-AUC | Test ROC-AUC | Threshold | Precision | Recall |     F1 |     F2 | Accuracy |
+|---------------------|-----------:|-------------:|----------:|----------:|-------:|-------:|-------:|---------:|
+| Logistic Regression |     0.7029 |       0.7013 |    0.3500 |    0.2674 | 0.8760 | 0.4098 | 0.6020 |   0.4642 |
+| Decision Tree       |     0.6580 |       0.6587 |    0.1200 |    0.2370 | 0.9419 | 0.3787 | 0.5906 |   0.3438 |
+| Random Forest       |     0.6985 |       0.6987 |    0.2800 |    0.2653 | 0.8815 | 0.4078 | 0.6019 |   0.4565 |
+| Gradient Boosting   |     0.7064 |       0.7060 |    0.1600 |    0.2714 | 0.8721 | 0.4140 | 0.6045 |   0.4757 |
 
 The project report highlight states that a tuned random forest reached approximately `0.97` ROC-AUC and `0.88` default recall. In the Streamlit dashboard, this report-level highlight is shown separately from the current reproducible training results. The reproducible results in this repository use a stricter pre-loan feature set, which is closer to a real loan approval setting.
 
