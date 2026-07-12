@@ -188,7 +188,7 @@ The current default training setup uses conservative pre-loan features and avoid
 
 The project report highlight states that a tuned random forest reached approximately `0.97` ROC-AUC and `0.88` default recall. In the Streamlit dashboard, this report-level highlight is shown separately from the current reproducible training results. The reproducible results in this repository use a stricter pre-loan feature set, which is closer to a real loan approval setting.
 
-## Run the Streamlit Dashboard
+## Run with Streamlit
 
 ```bash
 .venv/bin/streamlit run streamlit_app.py
