@@ -10,7 +10,7 @@ def numeric_table(df: pd.DataFrame) -> None:
     numeric_columns = display_df.select_dtypes(include=["number"]).columns
     st.dataframe(
         display_df,
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         column_config={
             column: st.column_config.NumberColumn(column, format="%.4f")
