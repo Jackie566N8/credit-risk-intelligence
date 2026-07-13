@@ -75,6 +75,7 @@ credit-risk-intelligence/
 │   ├── artifacts/                   # Saved model pipelines
 │   ├── results/                     # Model result text files
 │   └── figures/                     # EDA figures
+├── screenshots/                     # Streamlit dashboard screenshots
 ├── data/                            # Raw CSV files, excluded from git
 ├── pyproject.toml
 └── README.md
@@ -233,6 +234,28 @@ Dashboard pages:
 - Single Customer Decision: single-customer PD, 300-850 credit score, approval recommendation, risk drivers, and expected loss.
 - Batch Risk Assessment: CSV batch scoring, decision distribution, PD-score chart, and downloadable results.
 - EDA Figures: all generated EDA figures.
+
+## Streamlit Dashboard Screenshots
+
+### Portfolio Overview
+
+![Portfolio Overview](screenshots/Portfolio-Overview.png)
+
+### Model Detail
+
+![Model Detail](screenshots/Model-Detail.png)
+
+### EDA Figures Full Page
+
+![EDA Figures full page](screenshots/screencapture-localhost-8501-2026-07-13-16_27_28.png)
+
+### Batch Risk Assessment
+
+![Batch Risk Assessment](screenshots/Batch-Risk-Assessment.png)
+
+### EDA Figures
+
+![EDA Figures](screenshots/EDA-Figures.png)
 
 ## Dashboard Workflow
 
