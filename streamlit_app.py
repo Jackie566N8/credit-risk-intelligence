@@ -1,13 +1,20 @@
+import os
+from pathlib import Path
+
+MPL_CACHE_DIR = Path(__file__).resolve().parent / ".cache" / "matplotlib"
+MPL_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("MPLCONFIGDIR", str(MPL_CACHE_DIR))
+
 import streamlit as st
 
 from config.app_navigation_config import PAGE_LABELS
 from config.app_paths import MODEL_ARTIFACT_FILES, MODEL_RESULT_FILES
 from model_results.model_results_loader import load_all_model_reports, load_comparison_results
-from pages.page_batch_risk_assessment import render_batch_page
-from pages.page_eda_figures import render_figures_page
-from pages.page_model_detail import render_model_detail_page
-from pages.page_portfolio_overview import render_overview_page
-from pages.page_single_customer_decision import render_decision_page
+from app_pages.page_batch_risk_assessment import render_batch_page
+from app_pages.page_eda_figures import render_figures_page
+from app_pages.page_model_detail import render_model_detail_page
+from app_pages.page_portfolio_overview import render_overview_page
+from app_pages.page_single_customer_decision import render_decision_page
 from ui.streamlit_page_style import apply_app_style
 from ui.ui_result_status import show_result_status
 

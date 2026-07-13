@@ -63,7 +63,7 @@ The `data/` directory is intentionally excluded from git because the raw CSV fil
 credit-risk-intelligence/
 ├── streamlit_app.py                 # Streamlit application entry point
 ├── config/                          # Paths, page labels, model labels, and decision thresholds
-├── pages/                           # Streamlit page modules
+├── app_pages/                       # Streamlit page modules used by the main app router
 ├── ui/                              # Reusable Streamlit UI components
 ├── charts/                          # Matplotlib and Seaborn chart builders
 ├── risk/                            # Credit scoring, model inference, approval rules, batch scoring
@@ -91,7 +91,7 @@ uv sync
 If the virtual environment already exists, you can verify the code directly:
 
 ```bash
-.venv/bin/python -m py_compile streamlit_app.py config/*.py charts/*.py ui/*.py risk/*.py pages/*.py model_results/*.py modeling/*.py
+.venv/bin/python -m py_compile streamlit_app.py config/*.py charts/*.py ui/*.py risk/*.py app_pages/*.py model_results/*.py modeling/*.py
 ```
 
 ## Generate EDA Figures
@@ -270,7 +270,7 @@ Use this page to connect data-level findings with model behavior. The figures he
 Before a demo, run:
 
 ```bash
-.venv/bin/python -m py_compile streamlit_app.py config/*.py charts/*.py ui/*.py risk/*.py pages/*.py model_results/*.py modeling/*.py
+.venv/bin/python -m py_compile streamlit_app.py config/*.py charts/*.py ui/*.py risk/*.py app_pages/*.py model_results/*.py modeling/*.py
 .venv/bin/python modeling/plot.py
 .venv/bin/python modeling/train_random_forest.py
 .venv/bin/streamlit run streamlit_app.py
