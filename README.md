@@ -15,19 +15,35 @@ This project is an end-to-end credit risk analysis and decision platform built w
 
 ## Data Source
 
-The project uses public LendingClub loan records from 2007 to 2018. The dataset contains approximately 2.26 million accepted loan records and a large rejected application file. It is commonly distributed as the LendingClub accepted/rejected loan dataset with the following files:
+The project uses public LendingClub loan records from 2007 to 2018. The dataset contains approximately 2.26 million accepted loan records and a large rejected application file. It is commonly distributed on Kaggle as **All Lending Club loan data**:
+
+```text
+https://www.kaggle.com/datasets/wordsforthewise/lending-club
+```
+
+The raw CSV files are too large to store in this repository. Download the dataset from Kaggle yourself, unzip it if needed, and place the files in the local `data/` directory.
+
+Required files:
 
 ```text
 accepted_2007_to_2018Q4.csv
 rejected_2007_to_2018Q4.csv
 ```
 
-In this project, place the files under:
+Required local paths:
 
 ```text
 data/accepted/accepted_2007_to_2018Q4.csv
 data/rejected/rejected_2007_to_2018Q4.csv
 ```
+
+Optional Kaggle CLI download command:
+
+```bash
+kaggle datasets download -d wordsforthewise/lending-club -p data/raw --unzip
+```
+
+After downloading, move or copy the two CSV files into the required local paths shown above.
 
 The raw accepted dataset contains more than 150 fields. This project selects core credit-risk features, including loan amount, annual income, FICO score, debt-to-income ratio, revolving utilization, interest rate, loan term, grade, purpose, and verification status. The default label is derived from `loan_status`, where charged-off, default, and late loans are treated as default cases, and fully paid loans are treated as non-default cases.
 
@@ -189,6 +205,8 @@ The current default training setup uses conservative pre-loan features and avoid
 The project report highlight states that a tuned random forest reached approximately `0.97` ROC-AUC and `0.88` default recall. In the Streamlit dashboard, this report-level highlight is shown separately from the current reproducible training results. The reproducible results in this repository use a stricter pre-loan feature set, which is closer to a real loan approval setting.
 
 ## Run with Streamlit
+
+Start the dashboard from the project root:
 
 ```bash
 .venv/bin/streamlit run streamlit_app.py
