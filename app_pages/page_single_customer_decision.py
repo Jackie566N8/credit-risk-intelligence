@@ -33,7 +33,7 @@ def render_decision_page() -> None:
                 max_value=40000.0,
                 value=15000.0,
                 step=500.0,
-                help="客户申请的贷款本金。金额越高，潜在风险敞口越大。",
+                help="Requested loan principal. A higher amount increases potential exposure.",
             )
             annual_inc = st.number_input(
                 "Annual Income",
@@ -41,14 +41,14 @@ def render_decision_page() -> None:
                 max_value=500000.0,
                 value=75000.0,
                 step=1000.0,
-                help="客户年收入。系统会结合贷款金额计算贷款收入比。",
+                help="Applicant annual income. The system uses it with loan amount to calculate loan-to-income pressure.",
             )
             fico_score = st.slider(
                 "FICO Score",
                 min_value=300,
                 max_value=850,
                 value=700,
-                help="美国常用信用评分，分数越高通常信用风险越低。",
+                help="Common US credit score. A higher score usually indicates lower credit risk.",
             )
         with middle:
             dti = st.slider(
@@ -57,7 +57,7 @@ def render_decision_page() -> None:
                 max_value=60.0,
                 value=18.0,
                 step=0.5,
-                help="负债收入比。数值越高，说明偿债压力越大。",
+                help="Debt-to-income ratio. A higher value indicates stronger repayment pressure.",
             )
             revol_util = st.slider(
                 "Revolving Utilization",
@@ -65,7 +65,7 @@ def render_decision_page() -> None:
                 max_value=120.0,
                 value=42.0,
                 step=1.0,
-                help="信用卡等循环授信额度使用率。高利用率通常代表资金压力。",
+                help="Utilization of revolving credit lines such as credit cards. Higher utilization often signals liquidity stress.",
             )
             int_rate = st.slider(
                 "Interest Rate",
@@ -73,7 +73,7 @@ def render_decision_page() -> None:
                 max_value=31.0,
                 value=13.5,
                 step=0.1,
-                help="贷款利率。高利率常与更高风险定价相关。",
+                help="Loan interest rate. Higher rates often reflect higher risk pricing.",
             )
         with right:
             term_months = st.selectbox(
@@ -81,25 +81,25 @@ def render_decision_page() -> None:
                 TERM_OPTIONS,
                 index=0,
                 format_func=lambda value: f"{value} months",
-                help="贷款期限。长期限通常意味着更长风险暴露期。",
+                help="Loan term. A longer term usually means a longer risk exposure period.",
             )
             purpose = st.selectbox(
                 "Purpose",
                 PURPOSE_OPTIONS,
                 index=0,
-                help="贷款用途。模型会将不同用途作为类别特征处理。",
+                help="Loan purpose. The model treats different purposes as categorical features.",
             )
             home_ownership = st.selectbox(
                 "Home Ownership",
                 HOME_OWNERSHIP_OPTIONS,
                 index=0,
-                help="住房状态，可反映客户资产稳定性。",
+                help="Housing status, which can reflect applicant asset stability.",
             )
             verification_status = st.selectbox(
                 "Verification",
                 VERIFICATION_OPTIONS,
                 index=1,
-                help="收入或信息验证状态，用于辅助判断申请可信度。",
+                help="Income or information verification status, used as an auxiliary credibility signal.",
             )
             lgd = st.slider(
                 "Loss Given Default",
@@ -107,12 +107,12 @@ def render_decision_page() -> None:
                 max_value=0.90,
                 value=BASE_LOSS_GIVEN_DEFAULT,
                 step=0.05,
-                help="违约损失率。预期损失 = 贷款金额 x 违约概率 x LGD。",
+                help="Loss given default. Expected loss = loan amount x default probability x LGD.",
             )
 
         submitted = st.form_submit_button(
             "Run Assessment",
-            help="点击后系统会运行模型预测、计算信用评分、审批建议和预期损失。",
+            help="Run model prediction, calculate credit score, approval recommendation, and expected loss.",
         )
 
     if not submitted:

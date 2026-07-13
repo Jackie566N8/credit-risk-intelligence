@@ -44,7 +44,7 @@ def render_overview_page(comparison_df) -> None:
             "Metric",
             options=["test_roc_auc", "recall", "precision", "f1", "f2", "accuracy"],
             format_func=lambda value: METRIC_LABELS.get(value, value),
-            help="选择一个指标，右侧柱状图会按该指标对模型排序。",
+            help="Choose a metric. The bar chart ranks models by the selected metric.",
         )
         st.pyplot(make_metric_bar_chart(comparison_df, selected_metric))
     with col2:

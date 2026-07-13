@@ -26,7 +26,7 @@ def render_model_detail_page(reports: dict, default_model: str | None = None) ->
         options=model_names,
         index=index,
         format_func=lambda name: reports[name].label,
-        help="选择要查看详情的模型。建议演示时先看 Random Forest，再对比 Gradient Boosting。",
+        help="Choose a model to inspect. For demos, start with Random Forest and then compare Gradient Boosting.",
     )
     report = reports[selected_model]
 
@@ -56,7 +56,7 @@ def render_model_detail_page(reports: dict, default_model: str | None = None) ->
             st.info("This model does not expose feature importance or coefficients.")
         else:
             top_n = st.slider("Top features", min_value=5, max_value=20, value=15)
-            st.caption("调整 Top features 可以控制特征重要性图表中展示的变量数量。")
+            st.caption("Adjust Top features to control how many variables are shown in the feature importance chart.")
             st.pyplot(make_feature_importance_chart(report.feature_importance, report.label, top_n))
             numeric_table(report.feature_importance.head(top_n))
 

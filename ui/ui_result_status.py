@@ -17,7 +17,7 @@ def show_result_status(
 
     if available_count == len(result_files) and artifact_count > 0:
         st.success(
-            f"Ready for demo: loaded {available_count} model result files and {artifact_count} model artifact."
+            f"Loaded {available_count} model result files and {artifact_count} model artifact."
         )
     else:
         st.info(

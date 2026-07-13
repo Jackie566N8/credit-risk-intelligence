@@ -28,12 +28,12 @@ def render_batch_page() -> None:
         max_value=0.90,
         value=BASE_LOSS_GIVEN_DEFAULT,
         step=0.05,
-        help="用于批量计算预期损失。预期损失 = 贷款金额 x 违约概率 x LGD。",
+        help="Used to calculate batch expected loss. Expected loss = loan amount x default probability x LGD.",
     )
     uploaded_file = st.file_uploader(
         "Upload CSV",
         type=["csv"],
-        help="上传批量申请客户数据。字段名称必须与 Required columns 一致。",
+        help="Upload batch applicant data. Field names must match Required columns.",
     )
     if uploaded_file:
         with st.spinner("Reading uploaded CSV file..."):
@@ -70,7 +70,7 @@ def render_batch_page() -> None:
         data=result_df.to_csv(index=False).encode("utf-8"),
         file_name="batch_risk_assessment_results.csv",
         mime="text/csv",
-        help="下载包含违约概率、信用评分、审批建议和预期损失的评估结果。",
+        help="Download scored results with default probability, credit score, approval recommendation, and expected loss.",
     )
 
     template_csv = sample_batch_template().to_csv(index=False)
@@ -79,7 +79,7 @@ def render_batch_page() -> None:
         data=StringIO(template_csv).getvalue().encode("utf-8"),
         file_name="batch_risk_assessment_template.csv",
         mime="text/csv",
-        help="下载批量评估模板，按模板填写后可直接上传。",
+        help="Download the batch assessment template. Fill it in and upload it directly.",
     )
 
 
