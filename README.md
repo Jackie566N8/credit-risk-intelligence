@@ -2,6 +2,14 @@
 
 This project is an end-to-end credit risk analysis and decision platform built with Python. It covers data cleaning, feature engineering, default prediction, credit scoring, loan approval recommendation, batch risk assessment, expected loss calculation, and Streamlit-based visualization.
 
+## Project Scope
+
+- Project overview: The platform builds an end-to-end credit risk analysis and decision workflow in Python, covering data cleaning, feature engineering, default prediction, credit scoring, and loan approval recommendation generation.
+- Data source: The project uses approximately 2.26 million public LendingClub loan records from 2007 to 2018. From more than 150 raw fields, it selects core credit-risk features such as loan amount, annual income, FICO score, debt-to-income ratio, and revolving utilization.
+- Core algorithms: The modeling workflow compares logistic regression, decision tree, random forest, and gradient boosting models with Scikit-learn. It uses imbalanced-learn SMOTE, stratified 5-fold cross-validation, and threshold optimization to handle class imbalance and improve default recall.
+- Analysis result: The project report highlights a tuned random forest result of approximately `0.97` ROC-AUC and `0.88` default recall. The analysis identifies FICO score, debt-to-income ratio, and revolving utilization as major risk factors.
+- Platform features: Pandas and NumPy are used for data processing, Matplotlib and Seaborn for visualization, and Streamlit for the interactive dashboard. The platform supports single-customer prediction, batch risk assessment, 300-850 credit score generation, and expected loss calculation.
+
 ## Project Highlights
 
 - Data processing with Pandas and NumPy.
