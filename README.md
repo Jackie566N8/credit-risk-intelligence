@@ -245,9 +245,9 @@ Dashboard pages:
 
 ![Model Detail](screenshots/Model-Detail.png)
 
-### EDA Figures Full Page
+### Single Customer Decision
 
-![EDA Figures full page](screenshots/screencapture-localhost-8501-2026-07-13-16_27_28.png)
+![Single Customer Decision](screenshots/Single-Customer-Decision.png)
 
 ### Batch Risk Assessment
 
